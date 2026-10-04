@@ -1,0 +1,31 @@
+[Unit]
+Description=Soil2Crop — TabPFN-3.5 crop-recommendation app (FastAPI)
+Documentation=https://github.com/alcunii/tabpfn-soil-hackathon
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Edit APP_DIR to wherever you unpacked the repo (default below).
+Environment=APP_DIR=/opt/soil2crop
+WorkingDirectory=/opt/soil2crop/app
+Environment=PYTHONUNBUFFERED=1
+Environment=SOILHACK_CKPT=/opt/soil2crop/models/tabpfn-v3.5-20260909.safetensors
+Environment=SOILHACK_LIBRARY=/opt/soil2crop/data/samples/reference_library.csv
+# Optional: enable an LLM to phrase the agent narrative (numbers are still engine-computed).
+# Environment=SOILHACK_LLM_BASE=https://api.example.com/v1
+# Environment=SOILHACK_LLM_KEY=...
+# Environment=SOILHACK_LLM_MODEL=gpt-4o-mini
+ExecStart=/opt/soil2crop/venv/bin/python -m uvicorn server:app --host 127.0.0.1 --port 8877
+Restart=on-failure
+RestartSec=5
+
+# --- hardening: run unprivileged, minimal filesystem ---
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/opt/soil2crop/logs
+
+[Install]
+WantedBy=multi-user.target

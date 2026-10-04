@@ -1,0 +1,32 @@
+{
+ "accuracy": 1.0,
+ "macro_f1": 1.0,
+ "top3": 1.0,
+ "mean_confidence": 0.9133614897727966,
+ "ece": 0.08663853363079184,
+ "n_test": 680,
+ "chance": 0.3333333333333333,
+ "cell": "real_R3b_fewshot_blocked_k20",
+ "note": "spatially blocked (train-local and test in different 0.5deg cells)",
+ "train_n": 1335,
+ "test_n": 680,
+ "majority_baseline": 0.5397,
+ "train_blocks": [
+  "-25|56",
+  "-26|57",
+  "-27|60",
+  "-28|57",
+  "-28|58"
+ ],
+ "test_blocks": [
+  "-24|63",
+  "-26|55",
+  "-26|60",
+  "-27|55",
+  "-27|56"
+ ],
+ "tabpfn_version": "9.0.0",
+ "regressor_repo": "Prior-Labs/tabpfn_3_5",
+ "regressor_filename": "tabpfn-v3.5-20260909.safetensors",
+ "device": "cuda"
+}

@@ -1,0 +1,77 @@
+{
+ "experiment": "R3b_fewshot_spatial_blocks",
+ "block_deg": 0.5,
+ "classes": [
+  "Maize",
+  "Spring Cereals",
+  "Winter Cereals"
+ ],
+ "n_rows": 2181,
+ "cells": {
+  "leak_check_unblocked": {
+   "shared_block_test_rows": 527,
+   "n_test": 746,
+   "fraction": 0.7064
+  },
+  "baseline_lr_k20": {
+   "accuracy": 0.9794117647058823,
+   "macro_f1": null,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "fewshot_blocked_k0": {
+   "accuracy": 0.4602941176470588,
+   "macro_f1": 0.3152064451158107,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "fewshot_blocked_k5": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "fewshot_blocked_k10": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "fewshot_blocked_k20": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "fewshot_blocked_k50": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "fewshot_blocked_k100": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "climateonly_k0": {
+   "accuracy": 0.4602941176470588,
+   "macro_f1": 0.3152064451158107,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "climateonly_k5": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  },
+  "soilonly_k5": {
+   "accuracy": 0.825,
+   "macro_f1": 0.8238476190476189,
+   "majority_baseline": 0.5397,
+   "n_test": 680
+  }
+ }
+}

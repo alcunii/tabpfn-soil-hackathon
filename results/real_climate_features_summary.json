@@ -1,0 +1,18 @@
+{
+ "experiment": "climate_feature_build",
+ "source": "NASA POWER daily point API 2019-2023 (community AG), 0.25deg-deduped",
+ "n_points": 2250,
+ "n_cells": 146,
+ "n_cells_ok": 146,
+ "n_rows_out": 2250,
+ "features": [
+  "tmean",
+  "trange",
+  "prec_annual",
+  "prec_cv",
+  "gdd5",
+  "frost_days",
+  "aridity"
+ ],
+ "csv": "/root/tabpfn-soil-hackathon/data/raw/real_climate_features.csv"
+}

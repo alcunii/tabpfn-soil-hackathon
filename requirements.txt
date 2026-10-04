@@ -1,0 +1,11 @@
+# Soil2Crop — Python dependencies
+# Core model + app. CPU is enough (the context is narrow: 13 features).
+# For GPU, install the matching torch build first.
+tabpfn==9.0.0
+fastapi>=0.110
+uvicorn[standard]>=0.30
+numpy>=2
+pandas>=2
+scikit-learn>=1.4
+matplotlib>=3.8      # figures only
+pyarrow>=15          # reading the WorldCereal parquet

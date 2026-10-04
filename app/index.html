@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soil2Crop — real-data crop recommendation</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<style>
+ :root{--ink:#14231a;--soft:#5b6b60;--line:#d7e0d8;--green:#2b7a3d;--amber:#b06a12;--red:#b0413e;--bg:#f6f8f5}
+ *{box-sizing:border-box} body{margin:0;font:16px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;color:var(--ink);background:var(--bg)}
+ .wrap{max-width:1000px;margin:0 auto;padding:20px}
+ header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;border-bottom:2px solid var(--line);padding-bottom:10px}
+ h1{font-size:22px;margin:0}
+ .tag{font-size:12px;color:var(--soft);background:#eaf1ea;border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+ .sub{color:var(--soft);font-size:13px;margin:8px 0 16px}
+ .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:16px}
+ label{font-size:13px;color:var(--soft)} input,select{width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:16px;margin-top:4px;background:#fff}
+ button{background:var(--green);color:#fff;border:0;border-radius:8px;padding:12px 18px;font-size:16px;cursor:pointer;margin-top:12px}
+ button:disabled{opacity:.6;cursor:progress}
+ .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+ .preset{font-size:13px;color:var(--green);cursor:pointer;text-decoration:underline;margin-right:12px}
+ #map{height:280px;border-radius:10px;margin-top:14px;border:1px solid var(--line);z-index:0}
+ .tabs{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+ .tab{padding:8px 14px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-size:14px;background:#fff}
+ .tab.active{background:var(--green);color:#fff;border-color:var(--green)}
+ .bar{height:18px;border-radius:9px;background:#eef2ee;overflow:hidden;margin:3px 0}
+ .bar>span{display:block;height:100%;background:var(--green)}
+ .crop{display:flex;justify-content:space-between;font-weight:600}
+ .conf{font-variant-numeric:tabular-nums}
+ .muted{color:var(--soft);font-size:13px}
+ .kv{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding:4px 0;font-size:14px}
+ .note{background:#fff8ec;border:1px solid #f0dcb4;border-radius:8px;padding:10px;font-size:13px;color:#6b4d12}
+ .note.ok{background:#eef7ef;border-color:#cfe6d3;color:#255a30}
+ .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+ .src{font-size:10px;border-radius:6px;padding:1px 6px;margin-left:4px;vertical-align:middle}
+ .src.lv{background:#eef7ef;color:#255a30;border:1px solid #cfe6d3}
+ .src.nb{background:#fff3e0;color:#8a5a12;border:1px solid #f0dcb4}
+ .pill{display:inline-block;font-size:12px;border-radius:6px;padding:2px 8px;margin-left:6px}
+ .pill.g{background:#eef7ef;color:#255a30}.pill.a{background:#fff8ec;color:#8a5a12}.pill.r{background:#fdecec;color:#7a2523}
+ .step{border-left:3px solid var(--green);padding:4px 12px;margin:8px 0;font-size:14px}
+ .spin{display:none;color:var(--soft);font-size:13px}
+ @media(max-width:680px){.row,.two{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>🌱 Soil2Crop</h1>
+    <span class="tag">TabPFN-3.5</span><span class="tag">real soil · real crop labels</span>
+    <span class="tag">zero-shot · no training</span></header>
+  <div class="sub">Enter a farm coordinate. We fetch <b>real soil</b> (ISRIC SoilGrids) and
+    <b>real climate</b> (NASA POWER), then either ask <b>TabPFN-3.5</b> which crop the surrounding
+    real fields grow, or check any of 23 crops for suitability — always showing how much to trust it.</div>
+
+  <div class="card">
+    <div class="row">
+      <div><label>Latitude</label><input id="lat" value="9.40" inputmode="decimal"></div>
+      <div><label>Longitude</label><input id="lon" value="-0.84" inputmode="decimal"></div>
+    </div>
+    <div style="margin-top:8px" class="muted">Try:
+      <a class="preset" data-la="9.40" data-lo="-0.84">Tamale, Ghana</a>
+      <a class="preset" data-la="42.03" data-lo="-93.60">Iowa, US</a>
+      <a class="preset" data-la="-1.29" data-lo="36.82">Nairobi, Kenya</a>
+      <a class="preset" data-la="38.05" data-lo="-84.50">Lexington, US</a>
+    </div>
+    <div id="map"></div>
+    <button id="go" onclick="run()">Analyse this point</button>
+    <span class="spin" id="spin"> fetching real soil, climate &amp; predicting… (first query may take
+      up to ~90 s while the model warms; then it is fast)</span>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" id="tabA" onclick="setMode('A')">① Which crop grows here?</div>
+    <div class="tab" id="tabB" onclick="setMode('B')">② Can I grow a specific crop?</div>
+    <div class="tab" id="tabC" onclick="setMode('C')">③ How it works (transparency)</div>
+  </div>
+
+  <div id="modeB" style="display:none" class="card">
+    <label>Choose a crop to test (23 mainstream crops, 8 groups)</label>
+    <select id="cropSel"></select>
+    <div class="muted" style="margin-top:6px">Suitability uses <b>published FAO EcoCrop ranges</b>
+      (a transparent rule) — <b>not</b> a trained prediction. For the 3 real crops we also show the
+      TabPFN cross-check.</div>
+  </div>
+
+  <div id="out"></div>
+</div>
+
+<script>
+let MODE='A';
+const map=L.map('map').setView([9.40,-0.84],5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'© OpenStreetMap'}).addTo(map);
+let marker=null;
+function showPoint(la,lo){
+  if(marker)map.removeLayer(marker);
+  if(isFinite(la)&&isFinite(lo)){marker=L.marker([la,lo]).addTo(map);map.setView([la,lo],9);}
+}
+['lat','lon'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{
+  showPoint(parseFloat(lat.value),parseFloat(lon.value));}));
+document.querySelectorAll('.preset').forEach(a=>a.onclick=()=>{
+  lat.value=a.dataset.la;lon.value=a.dataset.lo;showPoint(+a.dataset.la,+a.dataset.lo);});
+function setMode(m){MODE=m;['A','B','C'].forEach(x=>document.getElementById('tab'+x).classList.toggle('active',x===m));
+  document.getElementById('modeB').style.display=(m==='B')?'block':'none';document.getElementById('out').innerHTML='';
+  if(m==='C')showMethod();}
+function bar(p){return `<div class="bar"><span style="width:${(p*100).toFixed(1)}%"></span></div>`;}
+function fmt(v,u){return v==null?'—':v+(u||'');}
+function pill(v){const c=v==='Suitable'?'g':(v==='Marginal'?'a':'r');return `<span class="pill ${c}">${v}</span>`;}
+function tag(src){return src==='nearest-field'?'<span class="src nb">nearest field</span>':'<span class="src lv">live</span>';}
+
+async function loadCrops(){
+  try{const r=await fetch('crops');const d=await r.json();
+    document.getElementById('cropSel').innerHTML=d.crops.map(c=>`<option>${c}</option>`).join('');
+  }catch(e){}
+}
+async function run(){
+  const la=parseFloat(lat.value),lo=parseFloat(lon.value);
+  showPoint(la,lo);
+  document.getElementById('go').disabled=true;spin.style.display='inline';
+  try{
+    if(MODE==='A')await runRecommend(la,lo);
+    else if(MODE==='B')await runSuit(la,lo);
+    else showMethod();
+  }catch(e){document.getElementById('out').innerHTML=`<div class="card note">Request failed: ${e}</div>`;}
+  finally{document.getElementById('go').disabled=false;spin.style.display='none';}
+}
+
+async function runRecommend(la,lo){
+  const t0=Date.now();
+  const r=await fetch('recommend',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat:la,lon:lo})});
+  const d=await r.json();
+  if(d.error){document.getElementById('out').innerHTML=`<div class="card note">Error: ${d.error}</div>`;return;}
+  const recs=d.recommendations.map((x,i)=>{const medal=['🥇','🥈','🥉'][i]||'';
+    return `<div style="margin:10px 0"><div class="crop"><span>${medal} ${x.crop}</span><span class="conf">${(x.confidence*100).toFixed(1)}%</span></div>${bar(x.confidence)}</div>`;}).join('');
+  const eff=d.effective||{};
+  const panel=(keys)=>keys.map(k=>{const e=eff[k]||{};return `<div class="kv"><span>${k} ${tag(e.source)}</span><span>${fmt(e.value)}</span></div>`;}).join('');
+  const comp=d.competence||{};
+  const compCls=(d.confidence_gap!=null&&d.confidence_gap>0.3)?'note ok':'note';
+  document.getElementById('out').innerHTML=`
+    <div class="card"><div class="crop" style="font-size:13px;color:var(--soft)"><span>Validated ML — real crop labels</span>
+      <span>${d.context.k} nearest real fields · ${((Date.now()-t0)/1000).toFixed(1)} s</span></div>${recs}
+      <div class="muted" style="margin-top:8px">Why: ${(d.explain||[]).join('; ')}</div></div>
+    <div class="two">
+      <div class="card"><b>Soil (SoilGrids 0–5 cm)</b>${panel(["phh2o","soc","clay","nitrogen","cec","bdod"])}</div>
+      <div class="card"><b>Climate (NASA POWER 2019–2023)</b>${panel(["tmean","trange","prec_annual","prec_cv","gdd5","frost_days","aridity"])}</div>
+    </div>
+    <div class="card ${compCls}"><b>How much to trust this</b><div style="margin-top:6px">${comp.note||''}</div>
+      <div class="muted" style="margin-top:6px">Context: ${JSON.stringify(d.context.region_mix)} ·
+        confidence gap (top − 2nd): ${d.confidence_gap==null?'—':(d.confidence_gap*100).toFixed(1)+' pt'}</div></div>
+    <div class="muted" style="text-align:center">${d.model} · labels: ESA WorldCereal · ${d.data_note||''}</div>`;
+}
+
+async function runSuit(la,lo){
+  const crop=document.getElementById('cropSel').value;
+  const r=await fetch('suitability',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lat:la,lon:lo,crop})});
+  const d=await r.json();
+  if(d.error){document.getElementById('out').innerHTML=`<div class="card note">Error: ${d.error}</div>`;return;}
+  const a=d.assessment,ev=d.evidence;
+  const fac=Object.entries(a.factors).map(([k,v])=>`<div class="kv"><span>${k}${k===a.limiting_factor?' (limiting)':''}</span><span>${v==null?'—':(v*100).toFixed(0)+'%'}</span></div>`).join('');
+  const alts=(d.alternatives||[]).map(x=>`<div class="kv"><span>${x.crop} ${pill(x.verdict)}</span><span>${(x.score*100).toFixed(0)}%</span></div>`).join('')||'<div class="muted">none clearly suitable — get a local soil test</div>';
+  const cc=d.ml_crosscheck||{};
+  document.getElementById('out').innerHTML=`
+    <div class="card"><div class="crop"><span>${a.crop} ${pill(a.verdict)}</span><span class="conf">${(a.score*100).toFixed(0)}%</span></div>
+      <div class="muted" style="margin-top:6px">Limiting factor: <b>${a.limiting_factor}</b> — ${a.reason}</div>
+      <div style="margin-top:8px">${fac}</div>
+      <div class="muted" style="margin-top:8px">${d.layer}</div></div>
+    <div class="two">
+      <div class="card"><b>Better-suited alternatives</b>${alts}</div>
+      <div class="card"><b>TabPFN cross-check</b>
+        <div style="margin-top:6px">${cc.tabpfn_confidence!=null?`TabPFN-3.5 confidence for ${cc.crop}: <b>${(cc.tabpfn_confidence*100).toFixed(1)}%</b>`:''}
+        <div class="muted" style="margin-top:4px">${cc.note||''}</div></div></div>
+    </div>
+    <div class="card"><b>Point values (real)</b>
+      <div class="kv"><span>mean temp</span><span>${fmt(ev.tmean,' °C')}</span></div>
+      <div class="kv"><span>annual rainfall</span><span>${fmt(ev.prec_annual,' mm')}</span></div>
+      <div class="kv"><span>soil pH</span><span>${fmt(ev.ph)}</span></div></div>`;
+}
+
+async function showMethod(){
+  document.getElementById('out').innerHTML='<div class="card muted">loading…</div>';
+  const r=await fetch('method');const d=await r.json();
+  const steps=d.pipeline.map(s=>`<div class="step">${s}</div>`).join('');
+  const data=Object.entries(d.data).map(([k,v])=>`<div class="kv"><span>${k}</span><span style="text-align:right;max-width:70%">${v}</span></div>`).join('');
+  const m=d.measured;
+  document.getElementById('out').innerHTML=`
+    <div class="card"><b>Engine</b><div class="muted" style="margin-top:6px">${d.engine}</div>
+      <div style="margin-top:10px"><b>Data (all real)</b>${data}</div></div>
+    <div class="card"><b>The process — behind every number</b>${steps}</div>
+    <div class="card"><b>Measured performance (honest)</b>
+      <div class="kv"><span>3-crop accuracy (random split)</span><span>${m['3_crop_random_split_accuracy']}</span></div>
+      <div class="kv"><span>majority baseline</span><span>${m.majority_baseline}</span></div>
+      <div class="kv"><span>US→Africa transfer</span><span>${m.us_to_africa_transfer}</span></div>
+      <div class="kv"><span>few-shot @ 5 local rows</span><span>${m.few_shot_k5_accuracy}</span></div>
+      <div class="muted" style="margin-top:6px">${m.note}</div></div>`;
+}
+
+// init
+showPoint(9.40,-0.84);loadCrops();
+</script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+# Soil2Crop — a Caddy vhost for the app on its OWN subdomain.
+# Replace soil2crop.example.com with your domain. Caddy fetches a TLS cert
+# automatically. Nothing here is secret.
+#
+# Install:  sudo cp Caddyfile.example /etc/caddy/soil2crop.caddy   (edit domain)
+#           sudo caddy validate --config /etc/caddy/soil2crop.caddy
+#           sudo systemctl reload caddy
+
+soil2crop.example.com {
+	encode zstd gzip
+
+	# --- security headers (safe defaults; the app sets its own CSP too) ---
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "no-referrer"
+		-Server
+	}
+
+	# --- the app: only these routes reach the backend ---
+	@api path /recommend /suitability /crops /method /health
+	handle @api {
+		reverse_proxy 127.0.0.1:8877
+	}
+
+	# --- everything else: the single-page UI ---
+	handle {
+		reverse_proxy 127.0.0.1:8877
+	}
+
+	log {
+		output file /var/log/caddy/soil2crop.access.log
+	}
+}

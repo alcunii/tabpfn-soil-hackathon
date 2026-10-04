@@ -1,0 +1,23 @@
+{
+ "accuracy": 0.9939393939393939,
+ "macro_f1": 0.9936898395721925,
+ "top3": 1.0,
+ "mean_confidence": 0.9946027994155884,
+ "ece": 0.006517309672904738,
+ "n_test": 660,
+ "chance": 0.045454545454545456,
+ "cell": "eas_e1_sweep_all",
+ "task": "crop_recommendation_classification",
+ "dataset": "kaggle atharvaingle/crop-recommendation-dataset (Apache-2.0)",
+ "n_features": 7,
+ "n_classes": 22,
+ "n_context": 1540,
+ "n_train_total": 1540,
+ "fit_s": 0.0,
+ "predict_s": 0.81,
+ "seed": 42,
+ "tabpfn_version": "9.0.0",
+ "regressor_repo": "Prior-Labs/tabpfn_3_5",
+ "regressor_filename": "tabpfn-v3.5-20260909.safetensors",
+ "device": "cuda"
+}

@@ -1,0 +1,26 @@
+{
+ "accuracy": 1.0,
+ "macro_f1": 1.0,
+ "top3": 1.0,
+ "mean_confidence": 0.9771217107772827,
+ "ece": 0.022878178402821435,
+ "n_test": 746,
+ "chance": 0.3333333333333333,
+ "cell": "real_R3_fewshot_AF_k50",
+ "n_features": 13,
+ "feature_set": "soil+clim",
+ "train_n": 1365,
+ "test_n": 746,
+ "train_regions": [
+  "Africa",
+  "US"
+ ],
+ "test_regions": [
+  "Africa"
+ ],
+ "majority_baseline": 0.5013,
+ "tabpfn_version": "9.0.0",
+ "regressor_repo": "Prior-Labs/tabpfn_3_5",
+ "regressor_filename": "tabpfn-v3.5-20260909.safetensors",
+ "device": "cuda"
+}

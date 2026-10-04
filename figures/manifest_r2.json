@@ -1,0 +1,27 @@
+{
+ "random_mixed": {
+  "accuracy": 0.9183359013867488,
+  "majority_baseline": 0.3852,
+  "n_test": 649
+ },
+ "withinUS": {
+  "accuracy": 0.8644501278772379,
+  "majority_baseline": 0.3223,
+  "n_test": 391
+ },
+ "withinAfrica": {
+  "accuracy": 0.49612403100775193,
+  "majority_baseline": 0.4961,
+  "n_test": 258
+ },
+ "trainUS_testAfrica": {
+  "accuracy": 0.48953488372093024,
+  "majority_baseline": 0.5105,
+  "n_test": 860
+ },
+ "trainAfrica_testUS": {
+  "accuracy": 0.3484267075978511,
+  "majority_baseline": 0.3454,
+  "n_test": 1303
+ }
+}

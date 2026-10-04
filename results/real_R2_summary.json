@@ -1,0 +1,43 @@
+{
+ "experiment": "R2_real_soil_to_real_crop_transfer",
+ "n_features": 6,
+ "classes": [
+  "Maize",
+  "Spring Cereals",
+  "Winter Cereals"
+ ],
+ "n_rows": 2163,
+ "cells": {
+  "random_mixed": {
+   "accuracy": 0.9183359013867488,
+   "macro_f1": 0.9194351097523722,
+   "majority_baseline": 0.3852,
+   "n_test": 649
+  },
+  "trainUS_testAfrica": {
+   "accuracy": 0.48953488372093024,
+   "macro_f1": 0.32864949258391885,
+   "majority_baseline": 0.5105,
+   "n_test": 860
+  },
+  "trainAfrica_testUS": {
+   "accuracy": 0.3484267075978511,
+   "macro_f1": 0.17768517014671528,
+   "majority_baseline": 0.3454,
+   "n_test": 1303
+  },
+  "withinUS": {
+   "accuracy": 0.8644501278772379,
+   "macro_f1": 0.8623341260009209,
+   "majority_baseline": 0.3223,
+   "n_test": 391
+  },
+  "withinAfrica": {
+   "accuracy": 0.49612403100775193,
+   "macro_f1": 0.3320363164721141,
+   "majority_baseline": 0.4961,
+   "n_test": 258
+  }
+ },
+ "reading": "compare each cell's accuracy against its majority baseline; the trainUS_testAfrica vs withinUS difference is the transfer gap."
+}

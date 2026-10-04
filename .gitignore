@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# Large data — NEVER committed. Everything here is re-downloadable from public
+# sources (see docs/DATASETS.md and scripts/). Samples that ARE committed live
+# in data/samples/ (small, illustrative).
+# ---------------------------------------------------------------------------
+data/raw/
+data/worldcereal/
+*.npy
+*.npz
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+
+# Model weights / caches (download with deploy/run_local.sh or the README)
+models/
+.cache/
+huggingface/
+
+# ---------------------------------------------------------------------------
+# Runtime, logs, notebook checkpoints
+# ---------------------------------------------------------------------------
+logs/*.log
+*.log
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.pytest_cache/
+.DS_Store
+.venv/
+venv/
+env/
+
+# ---------------------------------------------------------------------------
+# Secrets — NEVER commit (the vault holds the real values; only .example ships)
+# ---------------------------------------------------------------------------
+.env
+.env.*
+secrets/
+*.key
+*.pem
+.kaggle/
+*_token*
+
+# ---------------------------------------------------------------------------
+# Explicitly KEEP small samples, result JSONs and figures
+# ---------------------------------------------------------------------------
+!data/samples/
+!data/samples/*.csv
+!results/*.json
+!figures/*.png
+!figures/*.json

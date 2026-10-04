@@ -1,0 +1,40 @@
+{
+ "accuracy": 0.9183359013867488,
+ "macro_f1": 0.9194351097523722,
+ "top3": 1.0,
+ "mean_confidence": 0.8973191380500793,
+ "ece": 0.03146897405615573,
+ "n_test": 649,
+ "chance": 0.3333333333333333,
+ "cell": "real_R2_random_mixed",
+ "task": "real_crop_from_soil_transfer",
+ "train_n": 1514,
+ "test_n": 649,
+ "train_regions": [
+  "Africa",
+  "US"
+ ],
+ "test_regions": [
+  "Africa",
+  "US"
+ ],
+ "train_crop_counts": {
+  "Maize": 639,
+  "Winter Cereals": 585,
+  "Spring Cereals": 290
+ },
+ "test_crop_counts": {
+  "Winter Cereals": 260,
+  "Maize": 250,
+  "Spring Cereals": 139
+ },
+ "majority_baseline": 0.3852,
+ "fit_s": 16.24,
+ "predict_s": 1.32,
+ "soil_source": "ISRIC SoilGrids v2.0 (0-5cm mean)",
+ "label_source": "ESA WorldCereal point parquet (satellite-derived)",
+ "tabpfn_version": "9.0.0",
+ "regressor_repo": "Prior-Labs/tabpfn_3_5",
+ "regressor_filename": "tabpfn-v3.5-20260909.safetensors",
+ "device": "cuda"
+}

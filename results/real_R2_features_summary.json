@@ -1,0 +1,23 @@
+{
+ "experiment": "R2_feature_build",
+ "n_total": 2250,
+ "n_soil_ok": 2163,
+ "coverage": 0.961,
+ "by_region": {
+  "US": 1303,
+  "Africa": 860
+ },
+ "by_crop": {
+  "Maize": 889,
+  "Winter Cereals": 845,
+  "Spring Cereals": 429
+ },
+ "by_region_crop": {
+  "Africa/Maize": 439,
+  "Africa/Winter Cereals": 421,
+  "US/Maize": 450,
+  "US/Spring Cereals": 429,
+  "US/Winter Cereals": 424
+ },
+ "csv": "/root/tabpfn-soil-hackathon/data/raw/real_R2_features.csv"
+}

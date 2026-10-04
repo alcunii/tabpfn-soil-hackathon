@@ -1,0 +1,89 @@
+{
+ "experiment": "R3_climate_and_fewshot",
+ "n_rows": 2181,
+ "n_with_climate": 2181,
+ "classes": [
+  "Maize",
+  "Spring Cereals",
+  "Winter Cereals"
+ ],
+ "soil_features": [
+  "phh2o",
+  "soc",
+  "clay",
+  "nitrogen",
+  "cec",
+  "bdod"
+ ],
+ "climate_features": [
+  "tmean",
+  "trange",
+  "prec_annual",
+  "prec_cv",
+  "gdd5",
+  "frost_days",
+  "aridity"
+ ],
+ "cells": {
+  "soilonly_randomsplit": {
+   "accuracy": 0.9251908396946565,
+   "macro_f1": 0.9281644229621109,
+   "majority_baseline": 0.3847,
+   "n_test": 655
+  },
+  "soilclim_randomsplit": {
+   "accuracy": 0.934351145038168,
+   "macro_f1": 0.9356430956465287,
+   "majority_baseline": 0.3847,
+   "n_test": 655
+  },
+  "soilclim_US2AF": {
+   "accuracy": 0.4884526558891455,
+   "macro_f1": 0.3281613653995345,
+   "majority_baseline": 0.5115,
+   "n_test": 866
+  },
+  "soilclim_AF2US": {
+   "accuracy": 0.3338403041825095,
+   "macro_f1": 0.16685670847586467,
+   "majority_baseline": 0.3422,
+   "n_test": 1315
+  },
+  "fewshot_AF_k0": {
+   "accuracy": 0.49865951742627346,
+   "macro_f1": 0.33273703041144903,
+   "majority_baseline": 0.5013,
+   "n_test": 746
+  },
+  "fewshot_AF_k5": {
+   "accuracy": 0.9879356568364611,
+   "macro_f1": 0.9879345945042564,
+   "majority_baseline": 0.5013,
+   "n_test": 746
+  },
+  "fewshot_AF_k10": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5013,
+   "n_test": 746
+  },
+  "fewshot_AF_k20": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5013,
+   "n_test": 746
+  },
+  "fewshot_AF_k50": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5013,
+   "n_test": 746
+  },
+  "fewshot_AF_k100": {
+   "accuracy": 1.0,
+   "macro_f1": 1.0,
+   "majority_baseline": 0.5013,
+   "n_test": 746
+  }
+ }
+}

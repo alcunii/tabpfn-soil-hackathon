@@ -1,0 +1,30 @@
+{
+ "r2": 0.9025717252052714,
+ "rmse": 3.8189444099007526,
+ "mae": 2.1130799039887886,
+ "rpd": 3.2171746363425964,
+ "rpd_label": "good",
+ "rpiq": 0.9662355568308524,
+ "bias": 0.2181237543312212,
+ "y_mean": 6.50895357131958,
+ "y_sd": 12.286211013793945,
+ "n_test": 120,
+ "cell": "feas_e2_sweep_k100",
+ "task": "ossl_soc_regression_from_spectra",
+ "dataset": "OSSL v1.2 vis-NIR (open), 400-spectrum stratified sample",
+ "n_features": 1051,
+ "n_context": 100,
+ "n_train_total": 280,
+ "fit_s": 0.79,
+ "predict_s": 1.85,
+ "seed": 42,
+ "constant_baseline": {
+  "rmse": 12.58347329028934,
+  "r2": -0.057789866723605865,
+  "rpd": 0.9763767768805379
+ },
+ "tabpfn_version": "9.0.0",
+ "regressor_repo": "Prior-Labs/tabpfn_3_5",
+ "regressor_filename": "tabpfn-v3.5-20260909.safetensors",
+ "device": "cuda"
+}
